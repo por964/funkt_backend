@@ -17,6 +17,7 @@ import javax.persistence.NamedQuery;
  */
 @Entity
 @NamedQuery(name = "Employee.getAllRows", query = "SELECT e from Employee e")
+@NamedQuery(name = "Employee.getAll", query = "SELECT e.id,e.firstName,e.lastName,e.email from Employee e")
 public class Employee implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -42,6 +43,15 @@ public class Employee implements Serializable {
         this.lastName = lastName;
         this.email = email;
     }
+
+    public Employee(Long id, String firstName, String lastName, String email) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+    }
+    
+    
 
     public List<Project> getProjects() {
         return projects;

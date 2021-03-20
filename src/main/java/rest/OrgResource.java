@@ -2,6 +2,8 @@ package rest;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import entities.Contractor;
+import entities.Contractors;
 import entities.Department;
 import entities.Departments;
 import entities.Employee;
@@ -11,6 +13,7 @@ import entities.Projects;
 import errorhandling.MissingInputException;
 import facade.OrgFacade;
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -23,6 +26,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import utils.EMF_Creator;
 
@@ -30,19 +34,18 @@ import utils.EMF_Creator;
  *
  * @author claes
  */
-
 @Path("org")
 public class OrgResource {
-    
+
     private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
     private static final ExecutorService es = Executors.newCachedThreadPool();
-    
+
     private static final EntityManagerFactory EMF = EMF_Creator.createEntityManagerFactory();
     private static final OrgFacade EMPFACADE = OrgFacade.getEmployeeFacade(EMF);
-    
+
     @Context
     UriInfo uriInfo;
-    
+
     @GET
     @Path("empl")
     @Produces(MediaType.APPLICATION_JSON)
@@ -51,7 +54,37 @@ public class OrgResource {
         return gson.toJson(result);
 
     }
+
+    @GET
+    @Path("empl/all")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAllEmployees() throws IOException, InterruptedException, ExecutionException, TimeoutException {
+        List<Employee> res = EMPFACADE.allEmployees();
+        //return gson.toJson(res);
+        return Response.ok(gson.toJson(res)).build();
+
+    }
     
+    @GET
+    @Path("con/all")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAllContractors() throws IOException, InterruptedException, ExecutionException, TimeoutException {
+        Contractors res = EMPFACADE.getAllContractors();
+        //return gson.toJson(res);
+        return Response.ok(gson.toJson(res)).build();
+
+    }
+    
+    @POST
+    @Path("con")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public String addContractor(String con) throws MissingInputException {
+        Contractor contr = gson.fromJson(con, Contractor.class);
+        String result = EMPFACADE.addContractor(contr.getfName(), contr.getlName(), contr.getZip(), contr.getMail());
+        return gson.toJson(result);
+    }
+
     @POST
     @Path("empl")
     @Produces(MediaType.APPLICATION_JSON)
@@ -61,7 +94,7 @@ public class OrgResource {
         String result = EMPFACADE.addEmpl(em.getFirstName(), em.getLastName(), em.getEmail());
         return gson.toJson(result);
     }
-    
+
     @GET
     @Path("proj")
     @Produces(MediaType.APPLICATION_JSON)
@@ -70,7 +103,7 @@ public class OrgResource {
         return gson.toJson(result);
 
     }
-    
+
     @POST
     @Path("proj")
     @Produces(MediaType.APPLICATION_JSON)
@@ -80,7 +113,7 @@ public class OrgResource {
         String result = EMPFACADE.addProject(proj.getTitle(), proj.getDuration());
         return gson.toJson(result);
     }
-    
+
     @GET
     @Path("dept")
     @Produces(MediaType.APPLICATION_JSON)
@@ -89,7 +122,7 @@ public class OrgResource {
         return gson.toJson(result);
 
     }
-    
+
     @POST
     @Path("dept")
     @Produces(MediaType.APPLICATION_JSON)
@@ -100,5 +133,4 @@ public class OrgResource {
         return gson.toJson(result);
     }
 
-    
 }
