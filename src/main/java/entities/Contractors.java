@@ -1,4 +1,3 @@
-
 package entities;
 
 import java.util.ArrayList;
@@ -10,23 +9,23 @@ import java.util.List;
  */
 public class Contractors {
     
-    List<Contractor> posts = new ArrayList();
+    List<Contractor> contractors = new ArrayList();
 
     public Contractors() {
     }
     
     public Contractors(List<Contractor> cons) {
-        cons.forEach((e) -> {
-            posts.add(e);
+        cons.forEach((c) -> {
+            contractors.add(c);
         });
     }
 
-    public List<Contractor> getPosts() {
-        return posts;
+    public List<Contractor> getContractors() {
+        return contractors;
     }
 
-    public void setAll(List<Contractor> posts) {
-        this.posts = posts;
+    public void setAll(List<Contractor> contractors) {
+        this.contractors = contractors;
     }
     
     
